@@ -74,11 +74,30 @@ describe("Unit tests", () => {
       {
         text: "hello world",
       },
-      "/lowercase/foo"
+      /**
+       * The refPath is close to useless. I guess it works for the
+       * first collection portion of the path, but the document
+       * ID can't be captured in the actual function. It has to be
+       * passed in with the params in the ContextOptions.
+       */
+      "/lowercase/IT_DOES_NOT_MATTER_WHAT_THIS_IS"
     );
 
+    const contextOptions = {
+      params: {
+        lowercaseId: 'foo'
+      }
+    };
+
     // Call the function
-    await wrapped(after);
+    await wrapped(
+      after,
+      /**
+       * Here we need params within the ContextOptions in order
+       * to use context.params.lowercaseId in the actual function.
+       */
+       contextOptions
+    );
 
     // Check the data in the Firestore emulator
     const snap = await admin.firestore().doc("/uppercase/foo").get();

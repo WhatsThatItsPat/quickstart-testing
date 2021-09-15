@@ -26,20 +26,42 @@ exports.simpleCallable = functions.https
  * Firestore-triggered function which uppercases a string field of a document.
  */
 exports.firestoreUppercase = functions.firestore
-  .document("/lowercase/{doc}")
-  .onCreate(async (doc, context) => {
-    const docId = doc.id;
+  // .document("/lowercase/{doc}")
+  .document("/lowercase/{lowercaseId}")
+  .onCreate(async (snapshot, context) => {
 
-    const docData = doc.data();
-    const lowercase = docData.text;
+    /**
+     * // const docId = snapshot.id;
+     * 
+     * I wouldn't get the id from the snapshot like this. Rather, I'd use
+     * wildcard capture variable in the document path by pulling it out
+     * of the context params. But the variable can't be captured automatically
+     * when using the firebase-functions-test SDK. You have to pass it in
+     * as part of the ContextOptions when calling the wrapped function.
+     * Look in functions.spec.js to see this.
+     * 
+     * context will only have params when passed in:
+     * console.log(`context:`, context);
+     * 
+     * snapshot.ref.path will have a document ID that isn't used
+     * console.log(`snapshot.ref.path:`, snapshot.ref.path);
+     * 
+     * I found a question about it and answered it here:
+     * https://stackoverflow.com/a/69169408/1341838
+     * 
+     * And here's an issue about it on the repo:
+     * https://github.com/firebase/firebase-functions-test/issues/10
+     */
 
+    const { lowercaseId } = context.params
+    const { text: lowercaseText } = snapshot.data();
     const adminDb = admin.firestore();
     
     await adminDb
       .collection("uppercase")
-      .doc(docId)
+      .doc(lowercaseId)
       .set({
-        text: lowercase.toUpperCase(),
+        text: lowercaseText.toUpperCase(),
       });
   });
 
