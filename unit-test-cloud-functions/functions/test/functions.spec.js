@@ -122,10 +122,17 @@ describe("Unit tests", () => {
     await wrapped(user);
 
     // Check the data was written to the Firestore emulator
-    const snap = await admin.firestore().collection("users").doc(uid).get();
-    const data = snap.data();
+    const userSnapshot = await admin.firestore()
+      .collection("users")
+      .doc(uid)
+      .get();
 
-    expect(data.uid).to.eql(uid);
-    expect(data.email).to.eql(email);
+    const {
+      uid: savedUid,
+      email: savedEmail
+    } = userSnapshot.data();
+
+    expect(savedUid).to.eql(uid);
+    expect(savedEmail).to.eql(email);
   }).timeout(5000);
 });
