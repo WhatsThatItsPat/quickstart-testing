@@ -41,7 +41,7 @@ exports.firestoreUppercase = functions.firestore
      * Look in functions.spec.js to see this.
      * 
      * context will only have params when passed in:
-     * console.log(`context:`, context);
+     * console.log(`firestoreUppercase context:`, context);
      * 
      * snapshot.ref.path will have a document ID that isn't used
      * console.log(`snapshot.ref.path:`, snapshot.ref.path);
@@ -71,10 +71,38 @@ exports.firestoreUppercase = functions.firestore
 exports.userSaver = functions.auth.user()
   .onCreate(async (user, context) => {
     const adminDb = admin.firestore();
-    
+
+    // console.log(`userSaver context:`, context);
+    // console.log(`user`, user);
+
+    const {
+      uid, // Probably wouldn't save this.
+      email,
+      emailVerified,
+      displayName,
+      photoURL,
+      phoneNumber,
+      disabled,
+      providerData,
+      customClaims,
+      passwordSalt,
+      passwordHash,
+      tokensValidAfterTime,
+      metadata,
+    } = user;
+
     // Make a document in the user's collection with everything we know about the user
     await adminDb
       .collection("users")
       .doc(user.uid)
-      .set(user.toJSON());
+      // .set(user.toJSON());
+      .set({
+        uid, // Probably wouldn't save this.
+        email,
+        displayName,
+        photoURL,
+        phoneNumber,
+        // I don't think these should come through from creating in the emulator
+        // customClaims,
+      });
   });

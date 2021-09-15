@@ -100,7 +100,11 @@ describe("Unit tests", () => {
     );
 
     // Check the data in the Firestore emulator
-    const snap = await admin.firestore().doc("/uppercase/foo").get();
+    // Is this an "integration" test?
+    const snap = await admin.firestore()
+      .doc("/uppercase/foo")
+      .get();
+
     expect(snap.data()).to.eql({
       text: "HELLO WORLD",
     });
