@@ -11,6 +11,12 @@ const test = require("firebase-functions-test")({
   projectId: process.env.GCLOUD_PROJECT,
 });
 
+console.log(
+  `process.env.GCLOUD_PROJECT:`,
+  process.env.GCLOUD_PROJECT
+);
+
+
 // Import the exported function definitions from our functions/index.js file
 const myFunctions = require("../index");
 
