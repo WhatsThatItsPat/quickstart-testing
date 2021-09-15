@@ -120,7 +120,8 @@ describe("My app", () => {
     const room = db.collection("rooms").doc("firebase");
     await firebase.assertSucceeds(
       room.set({
-        owner: "alice",
+        // owner: "alice",
+        ownerUid: "alice",
         topic: "All Things Firebase",
       })
     );
@@ -131,26 +132,33 @@ describe("My app", () => {
     const room = db.collection("rooms").doc("firebase");
     await firebase.assertFails(
       room.set({
-        owner: "scott",
+        // owner: "scott",
+        ownerUid: "scott",
         topic: "Firebase Rocks!",
       })
     );
   });
 
   it("should not let one user steal a room from another user", async () => {
-    const alice = getAuthedFirestore({ uid: "alice" });
-    const bob = getAuthedFirestore({ uid: "bob" });
+    const aliceDb = getAuthedFirestore({ uid: "alice" });
+    const bobDb = getAuthedFirestore({ uid: "bob" });
+
+    const sameRoomPath = 'rooms/snow/';
 
     await firebase.assertSucceeds(
-      bob.collection("rooms").doc("snow").set({
-        owner: "bob",
+      // bobDb.collection("rooms").doc("snow").set({
+      bobDb.doc(sameRoomPath).set({
+        // owner: "bob",
+        ownerUid: "bob",
         topic: "All Things Snowboarding",
       })
     );
 
     await firebase.assertFails(
-      alice.collection("rooms").doc("snow").set({
-        owner: "alice",
+      // aliceDb.collection("rooms").doc("snow").set({
+      aliceDb.doc(sameRoomPath).update({
+        // owner: "alice",
+        ownerUid: "alice",
         topic: "skiing > snowboarding",
       })
     );
