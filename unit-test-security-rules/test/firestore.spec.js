@@ -71,8 +71,14 @@ after(async () => {
 describe("My app", () => {
   it("require users to log in before creating a profile", async () => {
     const db = getAuthedFirestore(null);
+    // const db = getAuthedFirestore({ uid: "alice" });
     const profile = db.collection("users").doc("alice");
-    await firebase.assertFails(profile.set({ birthday: "January 1" }));
+    await firebase.assertFails(
+      profile.set({
+        birthday: "January 1",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+    );
   });
 
   it("should enforce the createdAt date in user profiles", async () => {
