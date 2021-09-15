@@ -1,16 +1,35 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read;
-      allow create: if request.auth.uid == userId && request.resource.data.createdAt == request.time;
+
+    // [READ] Data that exists on the Firestore document
+    // beforeData
+    function existingData() {
+      return resource.data;
     }
+    // [WRITE] Potential data on the document were the wrtie to succeed
+    // afterData
+    function potentialData() {
+      return request.resource.data;
+    }
+
+    // match /users/{userId} {
+    match /users/{userIdFromUid} {
+      allow read;
+      allow create: if request.auth.uid == userIdFromUid
+        && potentialData().createdAt == request.time;
+    }
+
     match /rooms/{roomId} {
       allow read;
+
       // If you create a room, you must set yourself as the owner.
-      allow create: if request.resource.data.owner == request.auth.uid;
-      // Only the room owner is allowed to modify it, and owner mustn't be able to assign his room to other user.
-      allow update: if resource.data.owner == request.auth.uid && request.resource.data.owner == request.auth.uid;
+      allow create: if potentialData().ownerUid == request.auth.uid;
+
+      // Only the room owner is allowed to modify it, and owner
+      // mustn't be able to assign his room to other user.
+      allow update: if existingData().ownerUid == request.auth.uid
+        && potentialData().owner == request.auth.uid;
     }
   }
 }
