@@ -27,7 +27,7 @@ describe("Unit tests", () => {
 
   it("tests a simple HTTP function", async () => {
     // A fake request object, with req.query.text set to 'input'
-    const req = { query: { text: "input" } };
+    const req = { query: { text: "my test input text" } };
 
     const sendPromise = new Promise((resolve) => {
       // A fake response object, with a stubbed send() function which asserts that it is called
@@ -39,15 +39,16 @@ describe("Unit tests", () => {
       };
 
       // Invoke function with our fake request and response objects.
-      myFunctions.simpleHttp(req, res)
+      myFunctions.simpleHttp(req, res);
     });
 
     // Wait for the promise to be resolved and then check the sent text
     const text = await sendPromise;
-    expect(text).to.eq(`text: input`);
+    expect(text).to.eq(`text: my test input text`);
   });
 
-  it("tests a simple callable function", async () => {
+
+  it("tests a simple callable function (that sums two numbers)", async () => {
     const wrapped = test.wrap(myFunctions.simpleCallable);
 
     const data = {
@@ -63,6 +64,7 @@ describe("Unit tests", () => {
       c: 3,
     });
   });
+
 
   it("tests a Cloud Firestore function", async () => {
     const wrapped = test.wrap(myFunctions.firestoreUppercase);
@@ -84,6 +86,7 @@ describe("Unit tests", () => {
       text: "HELLO WORLD",
     });
   }).timeout(5000);
+
 
   it("tests an Auth function that interacts with Firestore", async () => {
     const wrapped = test.wrap(myFunctions.userSaver);
