@@ -20,4 +20,7 @@ To run the Cloud Firestore tests:
 
 ```
 firebase emulators:exec --only firestore "npm run test-firestore"
+
+# Or with the project flag using the demo prefix
+firebase emulators:exec --only firestore --project=demo-firestore-emulator-example "npm run test-firestore"
 ```

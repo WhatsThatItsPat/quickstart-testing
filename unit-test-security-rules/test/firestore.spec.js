@@ -20,7 +20,7 @@ const http = require("http");
 /**
  * The emulator will accept any project ID for testing.
  */
-const PROJECT_ID = "firestore-emulator-example";
+const PROJECT_ID = "demo-firestore-emulator-example";
 
 /**
  * The FIRESTORE_EMULATOR_HOST environment variable is set automatically
