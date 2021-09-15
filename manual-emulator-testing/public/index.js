@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-// Initialze Firebase pointing at our test project
+// Initialize Firebase pointing at our test project
 firebase.initializeApp({
-  projectId: "fakeproject",
+  projectId: "demo-fake-project",
   apiKey: "fakeApiKey"
 });
 
